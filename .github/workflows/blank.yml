@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import telebot
+import config
+
+from telebot import types
+
+bot = telebot.TeleBot(config.TOKEN)
+
+
+@bot.message_handler(commands=['start'])
+def welcome(message):
+
+    # keyboard
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = types.KeyboardButton("«Автопортрет» (1889)")
+    item2 = types.KeyboardButton("«Автопортрет с перевязанным ухом и трубкой» (1889)")
+    item3 = types.KeyboardButton("«Звёздная ночь» (1889)")
+    item4 = types.KeyboardButton("«Прогулка заключённых» (1889)")
+
+    markup.add(item1, item2, item3, item4)
+
+    bot.send_message(message.chat.id,
+                     "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>, бот созданный чтобы знакомить людей с творчеством Винсента Вилиема Ван Гога.".format(
+                         message.from_user, bot.get_me()),
+                     parse_mode='html', reply_markup=markup)
+
+
+@bot.message_handler(content_types=['text'])
+def Pictures(message):
+    if message.chat.type == 'private':
+        if message.text == '«Автопортрет» (1889)':
+            bot.send_photo(message.chat.id, 'https://upload.wikimedia.org/wikipedia/commons/8/85/Autoportrait_de_Vincent_van_Gogh.JPG');
+        elif message.text == '«Автопортрет с перевязанным ухом и трубкой» (1889)':
+            bot.send_photo(message.chat.id, 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Vincent_Willem_van_Gogh_106.jpg');
+        elif message.text == '«Звёздная ночь» (1889)':
+            bot.send_photo(message.chat.id, 'https://upload.wikimedia.org/wikipedia/commons/c/cd/VanGogh-starry_night.jpg');
+        elif message.text == '«Прогулка заключённых» (1889)':
+            bot.send_photo(message.chat.id, 'https://upload.wikimedia.org/wikipedia/commons/9/9e/Vincent_Willem_van_Gogh_037.jpg')
+
+# RUN
+bot.polling(none_stop=True)
